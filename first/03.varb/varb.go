@@ -3,6 +3,7 @@ package main
 import "fmt"
 
 func main() {
+	// deklar var with data type
 	var name string
 
 	name = "Arnov"
@@ -27,4 +28,10 @@ func main() {
 
 	fmt.Println(firstName)
 	fmt.Println(lastName)
+
+	// deklar var wthout data type
+	var herName = "Julian"
+	hisname := "kemosabe"
+	fmt.Println(herName)
+	fmt.Println(hisname)
 }
