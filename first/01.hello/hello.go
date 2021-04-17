@@ -10,7 +10,7 @@ func main(){
 	fmt.Println("benar =", true)
 	fmt.Println("benar =", false)
 	fmt.Println(len("Arnov"))
-	fmt.Println("Arnov"[0]) // byte
+	fmt.Println("Arnov"[0]) // out punya byte, jika menjadi string prlu convert
 }
 
 //compile kdengan 'go build <filename>.go
