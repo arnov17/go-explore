@@ -27,6 +27,14 @@ func registerUser(name string, blacklist Blacklist) {
 	}
 }
 
+func faktorialRekrusive(value int) int {
+	if value == 1 {
+		return 1
+	} else {
+		return value * faktorialRekrusive(value-1)
+	}
+}
+
 func main() {
 	sayHellotoFilter("eko", spamFilter)
 
@@ -41,5 +49,8 @@ func main() {
 
 	registerUser("admin", blocklist)
 	registerUser("eko", blocklist)
+
+	faktorial := faktorialRekrusive(5)
+	fmt.Println(faktorial)
 
 }
