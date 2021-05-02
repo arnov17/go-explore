@@ -11,6 +11,15 @@ func changeToIndonesia(address *Address) {
 	address.Country = "Indonesia"
 }
 
+type Man struct {
+	Name string
+}
+
+// pointer di method
+func (man *Man) calling() {
+	man.Name = "Mr " + man.Name
+}
+
 func main() {
 	address1 := Address{"Subang", "jabar", "indonesia"}
 	address2 := address1
@@ -42,4 +51,10 @@ func main() {
 	var alamatPointer *Address = &alamat
 	changeToIndonesia(alamatPointer)
 	fmt.Println(alamat)
+
+	// pointer di method
+	eko := Man{"eko"}
+	eko.calling()
+
+	fmt.Println(eko.Name)
 }
