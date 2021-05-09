@@ -33,12 +33,15 @@ func main() {
 
 	// deklar var wthout data type
 	var herName = "Julian"
-	hisname := "kemosabe"
+	hisName := "kemosabe"
 	fmt.Println(herName)
-	fmt.Println(hisname)
-	
+	fmt.Println(hisName)
+
 	const (
-		hisname = "ida"
-		hername = "anna"
+		newFirstName = "ida"
+		newLastName  = "anna"
 	)
+	fmt.Println(newFirstName)
+	fmt.Println(newLastName)
+
 }
