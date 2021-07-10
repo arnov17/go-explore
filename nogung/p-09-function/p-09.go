@@ -33,6 +33,60 @@ func main() {
 
 	fmt.Printf("luas lingkaran\t\t: %.2f \n", area)
 	fmt.Printf("keliling lingkaran\t: %.2f \n", circumference)
+
+	var angka = []int{2, 4, 3, 5, 4, 3, 3, 5, 5, 3}
+	var avg = calculate(angka...)
+	var msg = fmt.Sprintf("rata-rata %.2f \n", avg)
+	fmt.Print(msg)
+
+	yourHobiies("wick", "sleep", "eating")
+	var hobbies = []string{"reading", "sport"}
+	yourHobiies("ani", hobbies...)
+
+	// closure
+	var getMinMax = func(n []int) (int, int) {
+		var min, max int
+		for i, e := range n {
+			switch {
+			case i == 0:
+				max, min = e, e
+			case e > max:
+				max = e
+			case e < min:
+				max = e
+			}
+		}
+		return min, max
+	}
+
+	var numbers = []int{2, 3, 4, 3, 4, 2, 3}
+	var min, max = getMinMax(numbers)
+	fmt.Printf("data : %v\nmin : %v\nmax : %v\n", numbers, min, max)
+
+	var newNumbers = func(min int) []int {
+		var r []int
+		for _, e := range numbers {
+			if e < min {
+				continue
+			}
+			r = append(r, e)
+		}
+		return r
+	}(3)
+
+	fmt.Println("original number :", numbers)
+	fmt.Println("original number :", newNumbers)
+
+	var newMax = 3
+	var howMany, getNumbers = findMax(numbers, newMax)
+	var theNumbers = getNumbers()
+
+	fmt.Println("numbers\t:", numbers)
+	fmt.Printf("find \t: %d\n\n", max)
+
+	fmt.Println("found \t:", howMany)    // 9
+	fmt.Println("value \t:", theNumbers) // [2 3 0 3 2 0 2 0 3]
+
 }
 
 func printMessage(message string, arr []string) {
@@ -72,4 +126,33 @@ func calculated(d float64) (area float64, circumference float64) {
 	circumference = math.Pi * d
 	// mengembalikan 2 nilai
 	return
+}
+
+func calculate(number ...int) float64 {
+	var total int = 0
+	for _, num := range number {
+		total += num
+	}
+
+	var avg = float64(total) / float64(len(number))
+	return avg
+}
+
+func yourHobiies(name string, hobbies ...string) {
+	var hobbiesAsString = strings.Join(hobbies, ", ")
+
+	fmt.Printf("hello, My name is : %s\n", name)
+	fmt.Printf("my hobbies is : %s\n", hobbiesAsString)
+}
+
+func findMax(numbers []int, max int) (int, func() []int) {
+	var res []int
+	for _, e := range numbers {
+		if e <= max {
+			res = append(res, e)
+		}
+	}
+	return len(res), func() []int {
+		return res
+	}
 }
