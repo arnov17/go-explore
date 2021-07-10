@@ -27,4 +27,27 @@ func main() {
 
 	fmt.Println("numbers1", numbers1)
 	fmt.Println("numbers2", numbers2)
+
+	var buahs = [4]string{"apple", "grape", "banana", "melon"}
+
+	for i := 0; i < len(buahs); i++ {
+		fmt.Printf("elemen %d : %s \n", i, buahs[i])
+	}
+
+	var fruits3 = [4]string{"apple", "grape", "banana", "melon"}
+
+	// for i, fruit := range fruits3 {
+	// 	fmt.Printf("elemen %d : %s\n", i, fruit)
+	// }
+
+	for _, fruit := range fruits3 {
+		fmt.Printf("elemen %s\n", fruit)
+	}
+
+	var animal = make([]string, 2)
+	animal[0] = "cat"
+	animal[1] = "dog"
+	// animal[2] = "cow" // error: index out of range [2] with length 2
+
+	fmt.Println(animal)
 }
