@@ -87,6 +87,18 @@ func main() {
 	fmt.Println("found \t:", howMany)    // 9
 	fmt.Println("value \t:", theNumbers) // [2 3 0 3 2 0 2 0 3]
 
+	var data = []string{"wick", "jason", "delta"}
+	var dataConstainO = filter(data, func(each string) bool {
+		return strings.Contains(each, "o")
+	})
+	var dataLength5 = filter(data, func(each string) bool {
+		return len(each) == 5
+	})
+
+	fmt.Println("data asli \t \t:", data)
+	fmt.Println("filter ada data o \t", dataConstainO)
+	fmt.Println("data len 5 \t", dataLength5)
+
 }
 
 func printMessage(message string, arr []string) {
@@ -155,4 +167,18 @@ func findMax(numbers []int, max int) (int, func() []int) {
 	return len(res), func() []int {
 		return res
 	}
+}
+
+// alias
+type FilterCallback func(string) bool
+
+func filter(data []string, callback FilterCallback) []string {
+	var result []string
+	for _, each := range data {
+		var filtered = callback(each)
+		if filtered {
+			result = append(result, each)
+		}
+	}
+	return result
 }
