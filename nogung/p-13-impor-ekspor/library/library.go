@@ -1,5 +1,7 @@
 package library
 
+import "fmt"
+
 // func SayHello() {
 // 	fmt.Println("hello")
 // }
@@ -8,7 +10,19 @@ package library
 // 	fmt.Println("nama saya", name)
 // }
 
-type Student struct {
+// type Student struct {
+// 	Name  string
+// 	Grade int
+// }
+
+var Student = struct {
 	Name  string
 	Grade int
+}{}
+
+func init() {
+	Student.Name = "John Wick"
+	Student.Grade = 2
+
+	fmt.Println("--> library/library.go imported")
 }
