@@ -1,8 +1,8 @@
 package main
 
 import (
+	"calculate/helper"
 	"fmt"
-	"go-explore/quiz/calculate/helper"
 )
 
 func main() {
