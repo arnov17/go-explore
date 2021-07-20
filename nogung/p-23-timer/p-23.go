@@ -60,30 +60,41 @@ func main() {
 	// 	}
 	// }
 
-	// #7
-	var timeout = 5
-	var ch = make(chan bool)
+	// // #7
+	// var timeout = 5
+	// var ch = make(chan bool)
 
-	go timer(timeout, ch)
-	go watcher(timeout, ch)
+	// go timer(timeout, ch)
+	// go watcher(timeout, ch)
 
-	var input string
-	fmt.Println("what is 725/25 ?")
-	fmt.Scanln(&input)
+	// var input string
+	// fmt.Println("what is 725/25 ?")
+	// fmt.Scanln(&input)
 
-	if input == "29" {
-		fmt.Println("the answer is correct")
-	} else {
-		fmt.Println("the answer is wrong")
-	}
+	// if input == "29" {
+	// 	fmt.Println("the answer is correct")
+	// } else {
+	// 	fmt.Println("the answer is wrong")
+	// }
+
+	// # Time duuration
+	start := time.Now()
+
+	time.Sleep(5 * time.Second)
+
+	duration := time.Since(start)
+
+	fmt.Println("time elapsed in seconds:", duration.Seconds())
+	fmt.Println("time elapsed in minutes:", duration.Minutes())
+	fmt.Println("time elapsed in hours:", duration.Hours())
 }
 
+// #7
 func timer(timeout int, ch chan<- bool) {
 	time.AfterFunc(time.Duration(timeout)*time.Second, func() {
 		ch <- true
 	})
 }
-
 func watcher(timeout int, ch <-chan bool) {
 	<-ch
 	fmt.Println("\ntime out! no answer more than", timeout, "seconds")
