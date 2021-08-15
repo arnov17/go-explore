@@ -3,12 +3,16 @@ package main
 import (
 	"fmt"
 	"sync"
+	"time"
 )
-
-var wg sync.WaitGroup
 
 type ChopsStick struct {
 	sync.Mutex
+}
+
+type Host struct {
+	counter int
+	mut     sync.Mutex
 }
 
 type Philosophers struct {
@@ -16,33 +20,46 @@ type Philosophers struct {
 	leftChopstick, rightChopstick *ChopsStick
 }
 
-func (p Philosophers) eat(channel chan *Philosophers, wg *sync.WaitGroup) {
-	defer wg.Done()
-	for i := 0; i < 3; i++ {
-		channel <- &p
-		p.leftChopstick.Lock()
-		p.rightChopstick.Lock()
-		fmt.Printf("phiposopers %v, starting to eat, eating count : %d \n", p.number+1, i+1)
-		fmt.Printf("phiposopers %v, finishing eating, eating count : %d \n", p.number+1, i+1)
-		fmt.Println("---------")
-		p.leftChopstick.Unlock()
-		p.rightChopstick.Unlock()
+func (h *Host) GetPermission() bool {
+	h.mut.Lock()
+	defer h.mut.Unlock()
+	if h.counter == 2 {
+		return false
 	}
+	h.counter++
+	return true
 }
 
-func host(philoChannel chan *Philosophers, wg *sync.WaitGroup) {
+func (h *Host) Done() {
+	h.mut.Lock()
+	defer h.mut.Unlock()
+	h.counter--
+}
+
+func (p Philosophers) eat(wg *sync.WaitGroup, host *Host) {
+	defer wg.Done()
+	count := 0
 	for {
-		if len(philoChannel) == 2 {
-			<-philoChannel
-			<-philoChannel
+		if !host.GetPermission() {
+			continue
+		}
+		p.leftChopstick.Lock()
+		p.rightChopstick.Lock()
+		fmt.Printf("phiposopers %v, starting to eat, eating count : %d \n", p.number+1, count+1)
+		time.Sleep(10 * time.Millisecond)
+		fmt.Printf("phiposopers %v, finishing eating, eating count : %d \n", p.number+1, count+1)
+		fmt.Println("---------")
+		p.rightChopstick.Unlock()
+		p.leftChopstick.Unlock()
+		host.Done()
+		count++
+		if count == 3 {
+			break
 		}
 	}
 }
 
 func main() {
-	// create channel for 2 philosphers
-	channel := make(chan *Philosophers, 2)
-
 	chopstick := make([]*ChopsStick, 5)
 	for i := 0; i < 5; i++ {
 		chopstick[i] = new(ChopsStick)
@@ -52,11 +69,12 @@ func main() {
 		philos[i] = &Philosophers{i, chopstick[i], chopstick[(i+1)%5]}
 	}
 
-	go host(channel, &wg)
+	var wg sync.WaitGroup
+	wg.Add(5)
 
-	for i := 0; i < 5; i++ {
-		wg.Add(1)
-		go philos[i].eat(channel, &wg)
+	host := Host{0, sync.Mutex{}}
+	for _, p := range philos {
+		go p.eat(&wg, &host)
 	}
 	wg.Wait()
 

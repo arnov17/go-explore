@@ -3,63 +3,68 @@ package main
 import (
 	"fmt"
 	"sync"
+	"time"
 )
 
-var wg sync.WaitGroup
-
-type ChopsStick struct {
+type ChopS struct {
 	sync.Mutex
 }
-
-type Philosophers struct {
-	number                        int
-	leftChopstick, rightChopstick *ChopsStick
+type Philos struct {
+	num, count      int
+	leftcs, rightcs *ChopS
 }
 
-func (p Philosophers) eat(channel chan *Philosophers, wg *sync.WaitGroup) {
-	defer wg.Done()
+func (p Philos) eat(c chan *Philos, wg *sync.WaitGroup) {
 	for i := 0; i < 3; i++ {
-		channel <- &p
-		p.leftChopstick.Lock()
-		p.rightChopstick.Lock()
-		fmt.Printf("phiposopers %v, starting to eat, eating count : %d \n", p.number+1, i+1)
-		fmt.Printf("phiposopers %v, finishing eating, eating count : %d \n", p.number+1, i+1)
-		fmt.Println("---------")
-		p.leftChopstick.Unlock()
-		p.rightChopstick.Unlock()
+		c <- &p
+		if p.count < 3 {
+			p.leftcs.Lock()
+			p.rightcs.Lock()
+
+			fmt.Println("starting to eat ", p.num)
+			p.count = p.count + 1
+			fmt.Println("finishing eating", p.num)
+			p.rightcs.Unlock()
+			p.leftcs.Unlock()
+			wg.Done()
+		}
+
 	}
 }
 
-func host(philoChannel chan *Philosophers, wg *sync.WaitGroup) {
+func host(c chan *Philos, wg *sync.WaitGroup) {
 	for {
-		if len(philoChannel) == 2 {
-			<-philoChannel
-			<-philoChannel
+		if len(c) == 2 {
+			<-c
+			<-c
+			//time delay
+			time.Sleep(20 * time.Millisecond)
 		}
 	}
 }
 
 func main() {
-	// create channel for 2 philosphers
-	channel := make(chan *Philosophers, 2)
+	var i int
+	var wg sync.WaitGroup
+	c := make(chan *Philos, 2)
 
-	chopstick := make([]*ChopsStick, 5)
-	for i := 0; i < 5; i++ {
-		chopstick[i] = new(ChopsStick)
+	wg.Add(15)
+
+	ChopSticks := make([]*ChopS, 5)
+	for i = 0; i < 5; i++ {
+		ChopSticks[i] = new(ChopS)
 	}
-	philos := make([]*Philosophers, 5)
-	for i := 0; i < 5; i++ {
-		philos[i] = &Philosophers{i, chopstick[i], chopstick[(i+1)%5]}
+
+	Philosophers := make([]*Philos, 5)
+	for i = 0; i < 5; i++ {
+		Philosophers[i] = &Philos{i + 1, 0, ChopSticks[i], ChopSticks[(i+1)%5]}
 	}
 
-	go host(channel, &wg)
-
-	for i := 0; i < 5; i++ {
-		wg.Add(1)
-		go philos[i].eat(channel, &wg)
+	go host(c, &wg)
+	for i = 0; i < 5; i++ {
+		go Philosophers[i].eat(c, &wg)
 	}
 	wg.Wait()
-
 }
 
 /*
